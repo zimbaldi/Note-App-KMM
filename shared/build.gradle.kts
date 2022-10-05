@@ -18,7 +18,12 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("com.squareup.sqldelight:runtime:1.5.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -56,6 +61,7 @@ kotlin {
 sqldelight{
     database("NoteDatabase"){
         packageName = "com.zimba.noteappkmm.database"
+        sourceFolders = listOf("sqldelight")
     }
 }
 android {
