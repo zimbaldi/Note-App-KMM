@@ -17,7 +17,7 @@ import javax.inject.Inject
 class NoteListViewModel @Inject constructor(
     private val noteDataSource: NoteDataSource,
     private val savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
 
     private val searchNotes = SearchNotes()
 
@@ -25,29 +25,32 @@ class NoteListViewModel @Inject constructor(
     private val searchText = savedStateHandle.getStateFlow("searchText", "")
     private val isSearchActive = savedStateHandle.getStateFlow("isSearchActive", false)
 
-    val state = combine(notes, searchText, isSearchActive){notes, searchText, isSearchActive ->
+    val state = combine(notes, searchText, isSearchActive) { notes, searchText, isSearchActive ->
         NoteListState(
-        notes = searchNotes.execute(notes, searchText),
-        searchText = searchText,
-        isSearchActive = isSearchActive
+            notes = searchNotes.execute(notes, searchText),
+            searchText = searchText,
+            isSearchActive = isSearchActive
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NoteListState())
 
-    fun loadNotes(){
+    fun loadNotes() {
         viewModelScope.launch {
             savedStateHandle["notes"] = noteDataSource.getAllNotes()
         }
     }
-    fun onSearchTextChange(text: String){
+
+    fun onSearchTextChange(text: String) {
         savedStateHandle["searchText"] = text
     }
-    fun onToggleSearch(){
+
+    fun onToggleSearch() {
         savedStateHandle["isSearchActive"] = !isSearchActive.value
-        if(!isSearchActive.value){
+        if (!isSearchActive.value) {
             savedStateHandle["searchText"] = ""
         }
     }
-    fun deleteNoteById(id:Long){
+
+    fun deleteNoteById(id: Long) {
         viewModelScope.launch {
             noteDataSource.deleteNoteById(id)
             loadNotes()
