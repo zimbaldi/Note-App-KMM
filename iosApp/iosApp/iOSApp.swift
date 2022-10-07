@@ -1,10 +1,16 @@
 import SwiftUI
+import shared
 
 @main
 struct iOSApp: App {
+    
+    private let databaseModule = DatabaseModule()
+    
 	var body: some Scene {
-		WindowGroup {
-			ContentView()
-		}
+        WindowGroup {
+            NavigationView{
+                NoteListScreen(noteDataSource: databaseModule.noteDataSource)
+            }
+        }
 	}
 }
