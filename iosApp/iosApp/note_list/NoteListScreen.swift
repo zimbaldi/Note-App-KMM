@@ -26,14 +26,17 @@ struct NoteListScreen: View {
                 NavigationLink(destination: NoteDetailScreen(noteDataSource: self.noteDataSource, noteId: selectedNoteId), isActive: $isNoteSelected){
                     EmptyView()
                 }.hidden()
-                HideableSearchTextField<EmptyView>(onSearchToggled: { viewModel.toggleIsSearchActive()
+                HideableSearchTextField<NoteDetailScreen>(onSearchToggled: { viewModel.toggleIsSearchActive()
                     }, destinationProvider: {
-                        EmptyView()
+                        NoteDetailScreen(
+                            noteDataSource: noteDataSource,
+                            noteId: selectedNoteId
+                        )
                     }, isSearchActive: viewModel.isSearchActive, searchText: $viewModel.searchText)
                 .frame(maxWidth: .infinity, minHeight: 40)
                 .padding()
                 
-                if viewModel.isSearchActive{
+                if !viewModel.isSearchActive{
                     Text("All notes")
                         .font(.title2)
                 }
